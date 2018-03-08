@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
+from pygame import mixer
 import pyganim
+from pysndfx import AudioEffectsChain
 
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=4096)
@@ -10,8 +12,8 @@ pygame.font.init()
 pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
-display_width =  1600
-display_height = 900
+display_width =  1500
+display_height = 800
 
 
 
@@ -28,14 +30,17 @@ clock = pygame.time.Clock()
 
 #main functions
 
+MenuFX = (
+    AudioEffectsChain()
+	.reverb()
+)
+
+titlePic = pygame.image.load('images/title.png')
+backGroundPic = pygame.image.load('images/bg.png')
 
 
-titlePic = pygame.image.load("images/title.png")
-backGroundPic = pygame.image.load("images/bg.png")
 
-
-
-pygame.mixer.music.load("music/silent_col.ogg")
+pygame.mixer.music.load('music/menu-music.ogg')
 pygame.mixer.music.play()
 
 
@@ -47,9 +52,7 @@ def title(x,y):
 	gameDisplay.blit(backGroundPic , (0,0))
 	gameDisplay.blit(titlePic, (x,y,))
 
-
-def ConfirmStart():
-	pygame.mixer.music.load()
+ConfirmStart = pygame.mixer.Sound('sfx/start-confirm.wav')
 
 
 x = (display_width * 0)
@@ -69,11 +72,16 @@ while not crashed:
 			crashed = True
 	if event.type == pygame.locals.KEYDOWN:
 		if event.key == pygame.K_SPACE:
-			pygame.mixer.music.fadeout(700)
+			pygame.mixer.music.stop()
+			ConfirmStart.play(0)
+			titlePic.set_alpha(0)
+		if event.key == pygame.K_ESCAPE:
+			quit()
+			pygame.quit()
 
-	title(500,100)
+	title(450,50)
 	pygame.display.update()
-	clock.tick(30)
+	clock.tick(60)
 
 pygame.quit()
 quit()
