@@ -3,6 +3,8 @@ from pygame.locals import *
 from pygame import mixer
 import pyganim
 from pysndfx import AudioEffectsChain
+from PIL import Image, ImageEnhance
+import sys
 
 #init everything
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=4096)
@@ -20,7 +22,7 @@ white = (256,256,256)
 red = (255,0,0)
 #general game setup
 gameDisplay = pygame.display.set_mode((display_width, display_height ))
-pygame.display.set_caption('Fur Shmup')
+pygame.display.set_caption('FuzzForce')
 clock = pygame.time.Clock()
 #init AudioEffectsChain
 MenuFX = (
@@ -33,7 +35,11 @@ backGroundPic = pygame.image.load('images/bg.png')
 pygame.mixer.music.load('music/menu-music.ogg')
 pygame.mixer.music.play()
 
-def title(x,y): #title graphics
+def QuitAct():
+    pygame.quit()
+    quit()
+
+def title(x,y):                                              #title graphics
 	gameDisplay.blit(backGroundPic , (0,0))
 	gameDisplay.blit(titlePic, (x,y,))
 
@@ -43,18 +49,15 @@ x = (display_width * 0)
 y = (display_height * 0)
 
 crashed = False
-while not crashed:      #Game loop starts here.
+while not crashed:                                            #Game loop starts here.
 	for event in pygame.event.get() :
 		if event.type == pygame.QUIT:
-			crashed = True#if crash, then close python and pygame processes.
-	if event.type == pygame.locals.KEYDOWN: #key registers start here
-		if event.key == pygame.K_SPACE: #when press space, stop (almost) everything and do the next thing
-			pygame.mixer.music.stop()
+			crashed = True                               #if crash, then close python and pygame processes.
+	if event.type == pygame.locals.KEYDOWN:                    #key registers start here
+		if event.key == pygame.K_SPACE:                        #when press space, stop (almost) everything and do the next thing
+			pygame.mixer.music.fadeout(3)
 			ConfirmStart.play(0)
-			pygame.mixer.stop()
 			titlePic.set_alpha(0)
-		else:
-			pygame.mixer.stop()
 		if event.key == pygame.K_ESCAPE:
 			quit()
 			pygame.quit()
@@ -63,6 +66,5 @@ while not crashed:      #Game loop starts here.
 	title(450,50)
 	pygame.display.update()
 	clock.tick(60)
-#Game loop ends here
-pygame.quit()
-quit()
+
+QuitAct()
